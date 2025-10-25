@@ -1,15 +1,18 @@
 package com.todo_app_backend.todo_app_backend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todo_app_backend.todo_app_backend.dto.TaskRequest;
 import com.todo_app_backend.todo_app_backend.dto.TaskResponse;
 import com.todo_app_backend.todo_app_backend.service.TaskService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.todo_app_backend.todo_app_backend.config.TestSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -18,11 +21,13 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TaskController.class)
-@DisplayName("TaskController Integration Tests")
+@Import(TestSecurityConfig.class)  // ← ADD THIS
+@DisplayName("TaskController Unit Tests (WebMvcTest)")
 class TaskControllerTest {
 
     @Autowired
@@ -35,12 +40,15 @@ class TaskControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
+    @WithMockUser  // ← ADD THIS
     @DisplayName("POST /api/tasks - Should create task")
     void createTask_ShouldReturnCreatedTask() throws Exception {
+        // Given
         TaskRequest request = TaskRequest.builder()
                 .title("New Task")
                 .description("Description")
                 .build();
+
         TaskResponse response = TaskResponse.builder()
                 .id(1L)
                 .title("New Task")
@@ -50,7 +58,10 @@ class TaskControllerTest {
                 .build();
 
         when(taskService.createTask(any(TaskRequest.class))).thenReturn(response);
+
+        // When & Then
         mockMvc.perform(post("/api/tasks")
+                        .with(csrf())  // ← ADD CSRF
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -61,12 +72,17 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("GET /api/tasks - Should return recent 5 tasks")
     void getRecentTasks_ShouldReturnTaskList() throws Exception {
+        // Given
         TaskResponse task1 = TaskResponse.builder().id(1L).title("Task 1").completed(false).build();
         TaskResponse task2 = TaskResponse.builder().id(2L).title("Task 2").completed(false).build();
         List<TaskResponse> tasks = Arrays.asList(task1, task2);
+
         when(taskService.getRecentTasks()).thenReturn(tasks);
+
+        // When & Then
         mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
@@ -77,6 +93,7 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("PUT /api/tasks/{id}/complete - Should mark task as done")
     void completeTask_ShouldReturnCompletedTask() throws Exception {
         TaskResponse completedTask = TaskResponse.builder()
@@ -86,7 +103,9 @@ class TaskControllerTest {
                 .build();
 
         when(taskService.completeTask(1L)).thenReturn(completedTask);
-        mockMvc.perform(put("/api/tasks/1/complete"))
+
+        mockMvc.perform(put("/api/tasks/1/complete")
+                        .with(csrf()))  // ← ADD CSRF
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.completed").value(true));
 
@@ -94,13 +113,16 @@ class TaskControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("POST /api/tasks - Should return 400 if title missing")
     void createTask_ShouldReturn400_WhenTitleMissing() throws Exception {
         TaskRequest invalidRequest = TaskRequest.builder()
                 .title("")
                 .description("No title")
                 .build();
+
         mockMvc.perform(post("/api/tasks")
+                        .with(csrf())  // ← ADD CSRF
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());

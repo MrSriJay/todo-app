@@ -70,14 +70,7 @@ todo-app-frontend/
 - Node.js **18+**
 - npm **9+**
 
-### 2. Clone & Install
-
-```bash
-git clone <your-repo-url>
-cd todo-app-frontend
-```
-
-### 3. Run Development Server
+### 2. Run Development Server without docker
 
 ```bash
 npm run dev

@@ -1,7 +1,8 @@
+// todo-app-frontend/src/api.js
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:8080/api/tasks',
+  baseURL: '/api/tasks',  // Proxied by nginx
   withCredentials: true,
 });
 
