@@ -121,16 +121,12 @@ This ensures your frontend can communicate with the backend without CORS issues 
 
 An interactive walkthrough of the Todo App interface:
 <p align="center">
-  <video 
-    src="https://github.com/MrSriJay/todo-app/blob/main/todo-app-frontend/public/ui-guide.mp4" 
-    width="80%" 
-    controls 
-    loop 
-    muted 
+  <img 
+    src="https://github.com/MrSriJay/todo-app/blob/main/todo-app-frontend/public/ui-guide.gif" 
+    alt="UI Guide Animation"
+    width="80%"
     style="border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); margin: 10px 0;"
-  >
-    Your browser does not support the video tag.
-  </video>
+  />
 </p>
 
 > 💡 This animation demonstrates how tasks are added, viewed, and marked as complete in real-time.
