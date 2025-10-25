@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TaskController.class)
-@Import(TestSecurityConfig.class)  // ← ADD THIS
+@Import(TestSecurityConfig.class)  
 @DisplayName("TaskController Unit Tests (WebMvcTest)")
 class TaskControllerTest {
 
@@ -40,7 +40,7 @@ class TaskControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @WithMockUser  // ← ADD THIS
+    @WithMockUser  
     @DisplayName("POST /api/tasks - Should create task")
     void createTask_ShouldReturnCreatedTask() throws Exception {
         // Given
@@ -59,9 +59,9 @@ class TaskControllerTest {
 
         when(taskService.createTask(any(TaskRequest.class))).thenReturn(response);
 
-        // When & Then
+
         mockMvc.perform(post("/api/tasks")
-                        .with(csrf())  // ← ADD CSRF
+                        .with(csrf()) 
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -75,14 +75,13 @@ class TaskControllerTest {
     @WithMockUser
     @DisplayName("GET /api/tasks - Should return recent 5 tasks")
     void getRecentTasks_ShouldReturnTaskList() throws Exception {
-        // Given
+
         TaskResponse task1 = TaskResponse.builder().id(1L).title("Task 1").completed(false).build();
         TaskResponse task2 = TaskResponse.builder().id(2L).title("Task 2").completed(false).build();
         List<TaskResponse> tasks = Arrays.asList(task1, task2);
 
         when(taskService.getRecentTasks()).thenReturn(tasks);
 
-        // When & Then
         mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
@@ -105,7 +104,7 @@ class TaskControllerTest {
         when(taskService.completeTask(1L)).thenReturn(completedTask);
 
         mockMvc.perform(put("/api/tasks/1/complete")
-                        .with(csrf()))  // ← ADD CSRF
+                        .with(csrf())) 
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.completed").value(true));
 
@@ -122,7 +121,7 @@ class TaskControllerTest {
                 .build();
 
         mockMvc.perform(post("/api/tasks")
-                        .with(csrf())  // ← ADD CSRF
+                        .with(csrf()) 
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());

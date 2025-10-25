@@ -142,4 +142,3 @@ An interactive walkthrough of the Todo App interface:
 
 > 🪶 The Todo App features a notebook-inspired UI with soft yellow and cream tones for a relaxing, minimalist experience.
 
----
