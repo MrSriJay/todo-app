@@ -182,8 +182,6 @@ Run integration and unit tests with:
 mvn test
 ```
 
-> Tests use an **H2 in-memory database** under the `test` profile.
-
 ---
 
 ## 🧾 Swagger / OpenAPI
@@ -203,5 +201,67 @@ mvn test
 | `mvn package` | Build JAR package |
 | `mvn spring-boot:run` | Run application locally |
 | `mvn test` | Run all tests |
+
+---
+
+## 🔐 CORS & Security Configuration
+
+Before running the backend locally (especially when connecting from a frontend app like React or Angular), you need to **enable CORS** and **whitelist** your API endpoints in the security configuration.
+
+In **Spring Boot 3**, define a `CorsConfiguration` bean and a `SecurityFilterChain` to allow specific HTTP methods, headers, and origins.
+
+### ✅ Example: `SecurityConfig.java`
+
+```java
+package com.todo_app_backend.todo_app_backend.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable()) // Disable CSRF for local testing
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Apply CORS config
+            .authorizeHttpRequests(auth -> auth
+                // 👇 Whitelist public endpoints
+                .requestMatchers("/api/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .anyRequest().authenticated()
+            );
+        return http.build();
+    }
+
+    @Bean
+    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+}
+```
+
+### ⚡ Notes
+- `http://localhost:3000` → React local dev server  
+- `http://localhost:4200` → Angular local dev server (if used)  
+- Add multiple origins in `setAllowedOrigins()` as needed.  
+- Disabling CSRF is **only safe** for development or testing.  
+- The whitelist ensures `/api/**` and `/swagger-ui.html` are **accessible** for local testing.
 
 ---

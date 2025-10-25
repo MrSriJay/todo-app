@@ -129,6 +129,4 @@ For detailed instructions and documentation for each project component, check th
 <img src="https://img.shields.io/github/last-commit/MrSriJay/todo-app" alt="GitHub last commit">
 <img src="https://img.shields.io/github/issues/MrSriJay/todo-app" alt="GitHub issues">
 <img src="https://img.shields.io/github/issues-pr/MrSriJay/todo-app" alt="GitHub pull requests">
-<img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/MrSriJay/todo-app/main/.upptimerc.json" alt="Uptime">
-
 ---
