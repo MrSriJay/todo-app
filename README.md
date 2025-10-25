@@ -119,8 +119,8 @@ docker compose logs -f
 
 For detailed instructions and documentation for each project component, check the links below:
 
-- **Backend Project README:** [todo-app-backend README](https://github.com/MrSriJay/todo-app/blob/d7f6df52dec15e09b2b80698387d88d46d5c13b5/todo-app-backend/README.md)  
-- **Frontend Project README:** [todo-app-frontend README](https://github.com/MrSriJay/todo-app/blob/d7f6df52dec15e09b2b80698387d88d46d5c13b5/todo-app-frontend/README.md)
+- **Backend Project README:** [todo-app-backend README](/todo-app-backend/README.md)  
+- **Frontend Project README:** [todo-app-frontend README](/todo-app-frontend/README.md)
 
 ---
 
