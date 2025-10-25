@@ -117,8 +117,12 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 This ensures your frontend can communicate with the backend without CORS issues during local development.
 
 ---
+# 🖼️ UI Guide
 
-## 🖼️ UI Snapshots
+An interactive walkthrough of the Todo App interface:
+
+![UI Guide](https://github.com/MrSriJay/todo-app/blob/main/todo-app-frontend/public/ui-guide.gif)
+
 
 ![UI Snapshot](https://github.com/MrSriJay/todo-app/blob/e2993d4238e080040810a83db5d19f435f033dfb/todo-app-frontend/public/ui-snapshot.png)
 
